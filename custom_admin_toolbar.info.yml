@@ -1,0 +1,8 @@
+name: Custom admin toolbar
+type: module
+description: Provides a customized admin toolbar for menus accessible to specific user roles.
+core: 8.x
+package: Custom
+configure: custom_admin_toolbar.settings
+dependencies:
+  - admin_toolbar

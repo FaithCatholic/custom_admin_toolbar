@@ -1,0 +1,80 @@
+<?php
+
+use Drupal\Core\Menu\MenuTreeParameters;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_toolbar_alter().
+ */
+function custom_admin_toolbar_toolbar_alter(&$items) {
+  $config = \Drupal::service('config.factory')->get('custom_admin_toolbar.settings');
+
+  // Determine if the user is user 1, or has a
+  // super administrator role since they always
+  // get the original, non-custom admin toolbar.
+  $is_admin = FALSE;
+  $account = \Drupal::currentUser();
+  $roles = $account->getRoles();
+  foreach ($roles as $role) {
+    $role = Role::load($role);
+    if ($role->isAdmin() || (int) $account->id() === 1) {
+      $is_admin = TRUE;
+      break;
+    }
+  }
+
+  // Override only for non super-admins, depending on the role settings.
+  // No selection enables all non-admin roles.
+  if (
+    ($is_admin === FALSE && !$config->get('roles')) ||
+    ($is_admin === FALSE && is_array($config->get('roles')) && array_intersect($config->get('roles'), $roles)))
+  {
+    $items['administration']['tray']['toolbar_administration']['#pre_render'] = array('custom_admin_toolbar_prerender_toolbar_administration_tray');
+    $items['administration']['#attached']['library'][] = 'admin_toolbar/toolbar.tree';
+
+    if ($config->get('hide_home')) {
+      unset($items['home']);
+    }
+
+    if ($config->get('hide_user')) {
+      unset($items['user']);
+    }
+  }
+}
+
+/**
+ * Renders the custom toolbar administration tray.
+ */
+function custom_admin_toolbar_prerender_toolbar_administration_tray(array $element) {
+  $config = \Drupal::service('config.factory')->get('custom_admin_toolbar.settings');
+  $menu_tree = \Drupal::service('toolbar.menu_tree');
+  $parameters = new MenuTreeParameters();
+  $parameters->setMaxDepth(4)->onlyEnabledLinks();
+  $menu_source = $config->get('menu_source') ? $config->get('menu_source') : 'admin';
+  $tree = $menu_tree->load($menu_source, $parameters);
+  $manipulators = array(
+    array('callable' => 'menu.default_tree_manipulators:checkAccess'),
+    array('callable' => 'menu.default_tree_manipulators:generateIndexAndSort'),
+    array('callable' => 'custom_admin_toolbar_tools_menu_navigation_links'),
+  );
+  $tree = $menu_tree->transform($tree, $manipulators);
+  $element['administration_menu'] = $menu_tree->build($tree);
+  return $element;
+}
+
+/**
+ * Adds toolbar-specific attributes to the menu link tree.
+ */
+function custom_admin_toolbar_tools_menu_navigation_links(array $tree) {
+  foreach ($tree as $element) {
+    if ($element->subtree) {
+      custom_admin_toolbar_tools_menu_navigation_links($element->subtree);
+    }
+    $link = $element->link;
+    $definition = $link->getPluginDefinition();
+    $element->options['attributes']['title'] = $link->getDescription();
+  }
+  return $tree;
+}

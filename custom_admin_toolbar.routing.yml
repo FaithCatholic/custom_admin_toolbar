@@ -1,0 +1,10 @@
+
+custom_admin_toolbar.settings:
+  path: '/admin/config/user-interface/custom-admin-toolbar'
+  defaults:
+    _form: '\Drupal\custom_admin_toolbar\Form\Settings'
+    _title: 'Custom admin toolbar settings'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE

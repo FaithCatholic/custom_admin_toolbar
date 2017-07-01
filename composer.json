@@ -1,0 +1,14 @@
+{
+  "name": "drupal/custom_admin_toolbar",
+  "type": "drupal-module",
+  "description": "Provides a customized admin toolbar for menus accessible to specific user roles.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/custom_admin_toolbar",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/custom_admin_toolbar",
+    "source": "http://cgit.drupalcode.org/custom_admin_toolbar"
+  },
+  "require": { }
+}
