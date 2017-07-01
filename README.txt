@@ -8,7 +8,7 @@ menu tree.
 
 Install as usual at /admin/extend.
 
----CUSTOM BACKGROUND IMAGES---
+---USAGE---
 
 1. Navigate to /admin/config/user-interface/custom-admin-toolbar to view the settings form.
 (Make sure the "administer site configuration" is permission is granted to the user
