@@ -1,5 +1,5 @@
 {
-  "name": "faithcatholic /custom_admin_toolbar",
+  "name": "faithcatholic/custom_admin_toolbar",
   "type": "drupal-module",
   "description": "Provides a customized admin toolbar for menus accessible to specific user roles.",
   "keywords": ["Drupal"],
