@@ -31,6 +31,8 @@ function custom_admin_toolbar_toolbar_alter(&$items) {
     ($is_admin === FALSE && !$config->get('roles')) ||
     ($is_admin === FALSE && is_array($config->get('roles')) && array_intersect($config->get('roles'), $roles)))
   {
+    unset($items['administration']['tray']['toolbar_administration']['#lazy_builder']);
+    unset($items['administration']['tray']['toolbar_administration']['#create_placeholder']);
     $items['administration']['tray']['toolbar_administration']['#pre_render'] = array('custom_admin_toolbar_prerender_toolbar_administration_tray');
     $items['administration']['#attached']['library'][] = 'admin_toolbar/toolbar.tree';
 
