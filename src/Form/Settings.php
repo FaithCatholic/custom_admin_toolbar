@@ -82,7 +82,7 @@ class Settings extends ConfigFormBase {
   public function get_menus($all = TRUE) {
     if ($menus = Menu::loadMultiple()) {
       if (!$all) {
-        $menus = array_diff_key($menus, menu_list_system_menus());
+        $menus = array_diff_key($menus, Menu::loadMultiple());
       }
       foreach ($menus as $menu_name => $menu) {
         $menus[$menu_name] = $menu->label();
