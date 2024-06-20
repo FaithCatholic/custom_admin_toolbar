@@ -53,7 +53,7 @@ class Settings extends ConfigFormBase {
 
     $form['menu_source'] = array(
       '#default_value' => $config->get('menu_source') ? $config->get('menu_source') : 'admin',
-      '#options' => $this->get_menus(),
+      '#options' => ['' => $this->t('Select a menu')] + $this->get_menus(),
       '#title' => $this->t('Menu source'),
       '#type' => 'select',
       '#required' => TRUE
