@@ -5,10 +5,14 @@
   "keywords": ["Drupal"],
   "license": "GPL-2.0+",
   "homepage": "https://www.drupal.org/project/custom_admin_toolbar",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "support": {
     "issues": "https://www.drupal.org/project/issues/custom_admin_toolbar",
     "source": "http://cgit.drupalcode.org/custom_admin_toolbar"
   },
-  "require": { }
+  "require-dev": {
+    "drupal/devel": "^5.2",
+    "drupal/admin_toolbar": "^3.4",
+    "drush/drush": "^12"
+  }
 }
