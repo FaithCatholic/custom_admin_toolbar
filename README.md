@@ -1,14 +1,14 @@
----SUMMARY---
+# Custom Admin Toolbar
 
 Module aims to override the admin_toolbar module so that site administrators can provide
 a custom menu admin toolbar on a per-role basis using menus other than the system admin
 menu tree.
 
----INSTALLATION---
+## INSTALLATION
 
 Install as usual at /admin/extend.
 
----USAGE---
+## USAGE
 
 1. Navigate to /admin/config/user-interface/custom-admin-toolbar to view the settings form.
 (Make sure the "administer site configuration" is permission is granted to the user
