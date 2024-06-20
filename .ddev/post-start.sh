@@ -13,6 +13,9 @@ if [ -z "$(drush status --field=bootstrap)" ]; then
   drush en -y devel custom_admin_toolbar admin_toolbar_tools
   drush ucrt editor --mail='editor@example.com' --password='1'
   drush urol 'content_editor' 'editor'
+  drush cim -y --partial --source=/var/www/html/.ddev/custom_admin_toolbar/config/
+  drush scr ./.ddev/custom_admin_toolbar/create-menu-items.php
+  cat .ddev/custom_admin_toolbar/custom_admin_toolbar.settings.yml | drush cset --input-format=yaml custom_admin_toolbar.settings \? -
 fi
 
 # Always output this
