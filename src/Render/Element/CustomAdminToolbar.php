@@ -26,7 +26,13 @@ class CustomAdminToolbar extends AdminToolbar implements TrustedCallbackInterfac
       array('callable' => 'custom_admin_toolbar_tools_menu_navigation_links'),
     );
     $tree = $menu_tree->transform($tree, $manipulators);
-    $element['administration_menu'] = $menu_tree->build($tree);
+    $build = $menu_tree->build($tree);
+    if (!empty($element['administration_menu']['#items']) && !empty($build['#items'])) {
+      $element['administration_menu']['#items'] += $build['#items'];
+    }
+    else {
+      $element['administration_menu'] = $build;
+    }
     return $element;
   }
 }
