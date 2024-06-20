@@ -11,7 +11,8 @@ database:
     version: "10.11"
 use_dns_when_possible: true
 composer_version: "2"
-web_environment: []
+web_environment:
+    - COMPOSER_NO_INTERACTION=1
 corepack_enable: false
 
 # Key features of DDEV's config.yaml:
@@ -278,3 +279,7 @@ corepack_enable: false
 # information on the commands that can be extended and the tasks you can define
 # for them. Example:
 #hooks:
+# post-import-db:
+#   - exec: drush sql:sanitize
+#   - exec: drush updatedb
+#   - exec: drush cache:rebuild
