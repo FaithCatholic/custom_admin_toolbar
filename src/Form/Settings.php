@@ -112,11 +112,10 @@ class Settings extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
     $values = $form_state->getValues();
-
-    foreach ($values as $key => $value) {
-      $this->config('custom_admin_toolbar.settings')->set($key, $value);
-    }
-
+    $this->config('custom_admin_toolbar.settings')->set('roles', $values['roles']);
+    $this->config('custom_admin_toolbar.settings')->set('menu_source', $values['menu_source']);
+    $this->config('custom_admin_toolbar.settings')->set('hide_home', $values['hide_home']);
+    $this->config('custom_admin_toolbar.settings')->set('hide_user', $values['hide_user']);
     $this->config('custom_admin_toolbar.settings')->save();
   }
 
