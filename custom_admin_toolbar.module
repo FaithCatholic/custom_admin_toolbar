@@ -7,6 +7,22 @@ use Drupal\custom_admin_toolbar\Render\Element\CustomAdminToolbar;
 use Drupal\user\Entity\Role;
 
 /**
+ * Implements hook_module_implements_alter().
+ */
+function custom_admin_toolbar_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'toolbar_alter') {
+    // Move my_module_form_alter() to the end of the list.
+    // \Drupal::moduleHandler()->getImplementationInfo()
+    // iterates through $implementations with a foreach loop which PHP iterates
+    // in the order that the items were added, so to move an item to the end of
+    // the array, we remove it and then add it.
+    $group = $implementations['custom_admin_toolbar'];
+    unset($implementations['custom_admin_toolbar']);
+    $implementations['custom_admin_toolbar'] = $group;
+  }
+}
+
+/**
  * Implements hook_toolbar_alter().
  */
 function custom_admin_toolbar_toolbar_alter(&$items) {
@@ -59,6 +75,7 @@ function custom_admin_toolbar_tools_menu_navigation_links(array $tree) {
     $link = $element->link;
     $definition = $link->getPluginDefinition();
     $element->options['attributes']['title'] = $link->getDescription();
+    $element->options['attributes']['class'][] = 'toolbar-icon';
   }
   return $tree;
 }
