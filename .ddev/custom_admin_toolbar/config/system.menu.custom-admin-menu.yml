@@ -1,0 +1,8 @@
+uuid: cbb2a5b7-2178-4c6d-8b7b-097442fb8008
+langcode: en
+status: true
+dependencies: {  }
+id: custom-admin-menu
+label: 'Custom admin menu'
+description: 'A test menu created for testing the module functionality.'
+locked: false

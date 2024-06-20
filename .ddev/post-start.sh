@@ -10,7 +10,9 @@ if [ -z "$(drush status --field=bootstrap)" ]; then
   # freshly cloned project, poser needs to be run manually, but we are automating
   # that
   ./.ddev/commands/web/symlink-project
-  drush en -y devel custom_admin_toolbar
+  drush en -y devel custom_admin_toolbar admin_toolbar_tools
+  drush ucrt editor --mail='editor@example.com' --password='1'
+  drush urol 'content_editor' 'editor'
 fi
 
 # Always output this
