@@ -11,8 +11,10 @@ use Drupal\user\Entity\Role;
 
 /**
  * Implements hook_module_implements_alter().
+ *
+ * @phpstan-param array<string, mixed> $implementations
  */
-function custom_admin_toolbar_module_implements_alter(&$implementations, $hook) {
+function custom_admin_toolbar_module_implements_alter(array &$implementations, string $hook): void {
   if ($hook == 'toolbar_alter') {
     // Move my_module_form_alter() to the end of the list.
     // \Drupal::moduleHandler()->getImplementationInfo()
@@ -27,8 +29,10 @@ function custom_admin_toolbar_module_implements_alter(&$implementations, $hook) 
 
 /**
  * Implements hook_toolbar_alter().
+ *
+ * @phpstan-param array<string, mixed> $items
  */
-function custom_admin_toolbar_toolbar_alter(&$items) {
+function custom_admin_toolbar_toolbar_alter(array &$items): void {
   $config = \Drupal::service('config.factory')->get('custom_admin_toolbar.settings');
 
   // The toolbar varies by these settings and by the roles they are matched
@@ -79,8 +83,14 @@ function custom_admin_toolbar_toolbar_alter(&$items) {
 
 /**
  * Adds toolbar-specific attributes to the menu link tree.
+ *
+ * @param \Drupal\Core\Menu\MenuLinkTreeElement[] $tree
+ *   The menu link tree to manipulate.
+ *
+ * @return \Drupal\Core\Menu\MenuLinkTreeElement[]
+ *   The manipulated menu link tree.
  */
-function custom_admin_toolbar_tools_menu_navigation_links(array $tree) {
+function custom_admin_toolbar_tools_menu_navigation_links(array $tree): array {
   foreach ($tree as $element) {
     if ($element->subtree) {
       custom_admin_toolbar_tools_menu_navigation_links($element->subtree);

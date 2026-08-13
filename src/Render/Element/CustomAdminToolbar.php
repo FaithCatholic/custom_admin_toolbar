@@ -15,13 +15,13 @@ class CustomAdminToolbar extends AdminToolbar implements TrustedCallbackInterfac
   /**
    * Builds the administration menu tray from the configured menu source.
    *
-   * @param array $element
+   * @param array<string, mixed> $element
    *   The render element.
    *
-   * @return array
+   * @return array<string, mixed>
    *   The render element with the administration menu added.
    */
-  public static function preRenderTray($element) {
+  public static function preRenderTray(array $element): array {
     $config = \Drupal::service('config.factory')->get('custom_admin_toolbar.settings');
     $menu_tree = \Drupal::service('toolbar.menu_tree');
     $parameters = new MenuTreeParameters();

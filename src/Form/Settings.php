@@ -36,8 +36,11 @@ class Settings extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @return string[]
+   *   The editable config names.
    */
-  protected function getEditableConfigNames() {
+  protected function getEditableConfigNames(): array {
     return [
       'custom_admin_toolbar.settings',
     ];
@@ -52,8 +55,11 @@ class Settings extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @phpstan-param array<string, mixed> $form
+   * @phpstan-return array<string, mixed>
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state): array {
     $config = $this->config('custom_admin_toolbar.settings');
 
     $roles = [];
@@ -136,8 +142,10 @@ class Settings extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @phpstan-param array<mixed> $form
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     parent::submitForm($form, $form_state);
     $values = $form_state->getValues();
     $this->config('custom_admin_toolbar.settings')->set('roles', $values['roles']);
