@@ -2,38 +2,36 @@
 
 namespace Drupal\custom_admin_toolbar\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\TypedConfigManagerInterface;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\system\Entity\Menu;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides the custom admin toolbar settings form.
  */
 class Settings extends ConfigFormBase {
 
+  use AutowireTrait;
+
   /**
-   * The entity type manager.
+   * Constructs a Settings form.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory.
+   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typedConfigManager
+   *   The typed config manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
    */
-  protected $entityTypeManager;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
-    $this->entityTypeManager = $entity_type_manager;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('entity_type.manager')
-    );
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    TypedConfigManagerInterface $typedConfigManager,
+    protected EntityTypeManagerInterface $entityTypeManager,
+  ) {
+    parent::__construct($config_factory, $typedConfigManager);
   }
 
   /**
@@ -114,7 +112,8 @@ class Settings extends ConfigFormBase {
    *   Menu labels keyed by menu name.
    */
   public function getMenus($all = TRUE) {
-    if ($menus = Menu::loadMultiple()) {
+    $menus = $this->entityTypeManager->getStorage('menu')->loadMultiple();
+    if ($menus) {
       if (!$all) {
         $system_menus = [
           'tools' => 'Tools',
