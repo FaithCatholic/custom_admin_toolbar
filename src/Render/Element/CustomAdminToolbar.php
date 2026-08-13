@@ -7,14 +7,18 @@ use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\admin_toolbar\Render\Element\AdminToolbar;
 
 /**
- * Class CustomAdminToolbar.
- *
- * @package Drupal\custom_admin_toolbar\Render\Element *
+ * Renders the admin toolbar tray from a configurable menu source.
  */
 class CustomAdminToolbar extends AdminToolbar implements TrustedCallbackInterface {
 
   /**
+   * Builds the administration menu tray from the configured menu source.
    *
+   * @param array $element
+   *   The render element.
+   *
+   * @return array
+   *   The render element with the administration menu added.
    */
   public static function preRenderTray($element) {
     $config = \Drupal::service('config.factory')->get('custom_admin_toolbar.settings');

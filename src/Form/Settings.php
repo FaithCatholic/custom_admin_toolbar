@@ -9,7 +9,7 @@ use Drupal\system\Entity\Menu;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class SettingsForm.
+ * Provides the custom admin toolbar settings form.
  */
 class Settings extends ConfigFormBase {
 
@@ -78,7 +78,7 @@ class Settings extends ConfigFormBase {
 
     $form['menu_source'] = [
       '#default_value' => $config->get('menu_source') ? $config->get('menu_source') : 'admin',
-      '#options' => ['' => $this->t('Select a menu')] + $this->get_menus(),
+      '#options' => ['' => $this->t('Select a menu')] + $this->getMenus(),
       '#title' => $this->t('Menu source'),
       '#type' => 'select',
       '#required' => TRUE,
@@ -105,9 +105,15 @@ class Settings extends ConfigFormBase {
   }
 
   /**
+   * Returns a list of menu labels keyed by menu name.
    *
+   * @param bool $all
+   *   Whether to include system-provided menus.
+   *
+   * @return string[]
+   *   Menu labels keyed by menu name.
    */
-  public function get_menus($all = TRUE) {
+  public function getMenus($all = TRUE) {
     if ($menus = Menu::loadMultiple()) {
       if (!$all) {
         $system_menus = [
@@ -125,13 +131,6 @@ class Settings extends ConfigFormBase {
       asort($menus);
     }
     return $menus;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
   }
 
   /**
