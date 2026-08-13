@@ -26,6 +26,12 @@ if [ -z "$(drush status --field=bootstrap)" ]; then
   cat .ddev/custom_admin_toolbar/custom_admin_toolbar.settings.yml | drush cset --input-format=yaml custom_admin_toolbar.settings \? -
   drush rap authenticated 'access devel information'
   drush rap content_editor 'access toolbar'
+  # The tray also inherits the core admin menu from admin_toolbar, filtered by
+  # what the role can reach. Dropping these leaves only the custom menu, which
+  # is what this module is here to demonstrate. Both come from the standard
+  # profile; ignore failures so a different profile does not abort setup.
+  drush rmp content_editor 'access content overview' || true
+  drush rmp content_editor 'administer url aliases' || true
 fi
 
 # Always output this
