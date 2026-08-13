@@ -5,22 +5,25 @@
  * Custom admin toolbar module hooks.
  */
 
-use Drupal\Core\Cache\Cache;
-use Drupal\custom_admin_toolbar\Render\Element\CustomAdminToolbar;
-use Drupal\user\Entity\Role;
+use Drupal\Core\Hook\Attribute\LegacyHook;
+use Drupal\Core\Hook\Attribute\LegacyModuleImplementsAlter;
+use Drupal\custom_admin_toolbar\Hook\CustomAdminToolbarHooks;
 
 /**
  * Implements hook_module_implements_alter().
  *
+ * Superseded by the Order::Last attribute on CustomAdminToolbarHooks; kept for
+ * Drupal 10, which has no attribute-based ordering.
+ *
  * @phpstan-param array<string, mixed> $implementations
  */
+#[LegacyModuleImplementsAlter]
 function custom_admin_toolbar_module_implements_alter(array &$implementations, string $hook): void {
   if ($hook == 'toolbar_alter') {
-    // Move my_module_form_alter() to the end of the list.
-    // \Drupal::moduleHandler()->getImplementationInfo()
-    // iterates through $implementations with a foreach loop which PHP iterates
-    // in the order that the items were added, so to move an item to the end of
-    // the array, we remove it and then add it.
+    // \Drupal::moduleHandler()->getImplementationInfo() iterates through
+    // $implementations with a foreach loop which PHP iterates in the order
+    // that the items were added, so to move an item to the end of the array,
+    // we remove it and then add it.
     $group = $implementations['custom_admin_toolbar'];
     unset($implementations['custom_admin_toolbar']);
     $implementations['custom_admin_toolbar'] = $group;
@@ -32,53 +35,9 @@ function custom_admin_toolbar_module_implements_alter(array &$implementations, s
  *
  * @phpstan-param array<string, mixed> $items
  */
+#[LegacyHook]
 function custom_admin_toolbar_toolbar_alter(array &$items): void {
-  $config = \Drupal::service('config.factory')->get('custom_admin_toolbar.settings');
-
-  // The toolbar varies by these settings and by the roles they are matched
-  // against. Record that unconditionally, so the cached toolbar is also
-  // invalidated when a change starts or stops the override applying.
-  $items['#cache']['tags'] = Cache::mergeTags($items['#cache']['tags'] ?? [], $config->getCacheTags());
-  $items['#cache']['contexts'] = Cache::mergeContexts($items['#cache']['contexts'] ?? [], ['user.roles']);
-
-  // Determine if the user is user 1, or has a
-  // super administrator role since they always
-  // get the original, non-custom admin toolbar.
-  $account = \Drupal::currentUser();
-  $roles = $account->getRoles();
-  $is_admin = (int) $account->id() === 1;
-  if (!$is_admin) {
-    // loadMultiple() skips role IDs with no matching entity, so a stale role
-    // reference on the account cannot fatal here.
-    foreach (Role::loadMultiple($roles) as $role) {
-      if ($role->isAdmin()) {
-        $is_admin = TRUE;
-        break;
-      }
-    }
-  }
-
-  // Override only for non super-admins, depending on the role settings.
-  // No selection enables all non-admin roles.
-  if (
-    ($is_admin === FALSE && !$config->get('roles')) ||
-    ($is_admin === FALSE && is_array($config->get('roles')) && array_intersect($config->get('roles'), $roles))) {
-    unset($items['administration']['tray']['toolbar_administration']['#lazy_builder']);
-    unset($items['administration']['tray']['toolbar_administration']['#create_placeholder']);
-    $items['administration']['tray']['toolbar_administration']['#pre_render'][] = [
-      CustomAdminToolbar::class,
-      'preRenderTray',
-    ];
-    $items['administration']['#attached']['library'][] = 'admin_toolbar/toolbar.tree';
-
-    if ($config->get('hide_home')) {
-      unset($items['home']);
-    }
-
-    if ($config->get('hide_user')) {
-      unset($items['user']);
-    }
-  }
+  \Drupal::service(CustomAdminToolbarHooks::class)->toolbarAlter($items);
 }
 
 /**
