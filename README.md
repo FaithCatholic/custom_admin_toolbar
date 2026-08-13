@@ -26,7 +26,11 @@ should get the overridden toolbar. Note that the standard profile grants that
 permission to the Content editor role.
 
 Core plans to move Toolbar to a contributed project before Drupal 12
-([#3484850](https://www.drupal.org/project/drupal/issues/3484850)).
+([#3484850](https://www.drupal.org/project/drupal/issues/3484850)). Admin
+Toolbar is splitting branches in response, with 3.x covering core up to 11.3
+and 4.x targeting 11.4 and later
+([#3565206](https://www.drupal.org/project/admin_toolbar/issues/3565206)),
+so the branch this module builds on will matter.
 
 ## INSTALLATION
 
