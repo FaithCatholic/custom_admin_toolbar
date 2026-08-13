@@ -40,14 +40,17 @@ function custom_admin_toolbar_toolbar_alter(&$items) {
   // Determine if the user is user 1, or has a
   // super administrator role since they always
   // get the original, non-custom admin toolbar.
-  $is_admin = FALSE;
   $account = \Drupal::currentUser();
   $roles = $account->getRoles();
-  foreach ($roles as $role) {
-    $role = Role::load($role);
-    if ($role->isAdmin() || (int) $account->id() === 1) {
-      $is_admin = TRUE;
-      break;
+  $is_admin = (int) $account->id() === 1;
+  if (!$is_admin) {
+    // loadMultiple() skips role IDs with no matching entity, so a stale role
+    // reference on the account cannot fatal here.
+    foreach (Role::loadMultiple($roles) as $role) {
+      if ($role->isAdmin()) {
+        $is_admin = TRUE;
+        break;
+      }
     }
   }
 
