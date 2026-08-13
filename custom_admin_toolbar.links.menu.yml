@@ -4,4 +4,3 @@ custom_admin_toolbar.settings:
   description: 'Configure settings for custom admin toolbar.'
   parent: system.admin_config_ui
   weight: 99
-

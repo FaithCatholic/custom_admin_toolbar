@@ -40,7 +40,7 @@ class Settings extends ConfigFormBase {
       }
     }
 
-    $form['roles'] = array(
+    $form['roles'] = [
       '#description' => 'Ctrl+click to select multiple. Leave blank to override all roles by default.',
       '#default_value' => $config->get('roles') ? $config->get('roles') : NULL,
       '#empty_value' => '_none',
@@ -49,36 +49,39 @@ class Settings extends ConfigFormBase {
       '#required' => FALSE,
       '#title' => $this->t('Apply to specific roles'),
       '#type' => 'select',
-    );
+    ];
 
-    $form['menu_source'] = array(
+    $form['menu_source'] = [
       '#default_value' => $config->get('menu_source') ? $config->get('menu_source') : 'admin',
       '#options' => ['' => $this->t('Select a menu')] + $this->get_menus(),
       '#title' => $this->t('Menu source'),
       '#type' => 'select',
-      '#required' => TRUE
-    );
+      '#required' => TRUE,
+    ];
 
-    $form['tabs'] = array(
+    $form['tabs'] = [
       '#title' => $this->t('Menu tabs'),
       '#type' => 'fieldset',
-    );
+    ];
 
-    $form['tabs']['hide_user'] = array(
+    $form['tabs']['hide_user'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Hide account tab'),
       '#default_value' => $config->get('hide_user') ? $config->get('hide_user') : 0,
-    );
+    ];
 
-    $form['tabs']['hide_home'] = array(
+    $form['tabs']['hide_home'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Hide home tab'),
       '#default_value' => $config->get('hide_home') ? $config->get('hide_home') : 0,
-    );
+    ];
 
     return parent::buildForm($form, $form_state);
   }
 
+  /**
+   *
+   */
   public function get_menus($all = TRUE) {
     if ($menus = Menu::loadMultiple()) {
       if (!$all) {
