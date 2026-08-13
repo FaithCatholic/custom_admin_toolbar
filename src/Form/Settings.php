@@ -133,7 +133,9 @@ class Settings extends ConfigFormBase {
         $menus = array_diff_key($menus, $system_menus);
       }
       foreach ($menus as $menu_name => $menu) {
-        $menus[$menu_name] = $menu->label();
+        // Cast so the sort below compares strings rather than objects, since
+        // label() may return TranslatableMarkup.
+        $menus[$menu_name] = (string) $menu->label();
       }
       asort($menus);
     }

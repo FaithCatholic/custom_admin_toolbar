@@ -26,7 +26,10 @@ class CustomAdminToolbar extends AdminToolbar implements TrustedCallbackInterfac
     $menu_tree = \Drupal::service('toolbar.menu_tree');
     $parameters = new MenuTreeParameters();
     $parameters->setMaxDepth(4)->onlyEnabledLinks();
-    $menu_source = $config->get('menu_source') ? $config->get('menu_source') : 'admin';
+    $menu_source = $config->get('menu_source');
+    if (!is_string($menu_source) || $menu_source === '') {
+      $menu_source = 'admin';
+    }
     $tree = $menu_tree->load($menu_source, $parameters);
     $manipulators = [
       ['callable' => 'menu.default_tree_manipulators:checkAccess'],
