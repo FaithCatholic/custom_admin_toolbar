@@ -6,21 +6,27 @@ menu tree.
 
 ## REQUIREMENTS
 
+Drupal 10.2+ or 11, plus the
+[Admin Toolbar](https://www.drupal.org/project/admin_toolbar) module.
+
 > [!WARNING]
 > This module has no effect while core's **Navigation** module is enabled.
+> Navigation was added in Drupal 10.3 and is installed by the standard profile
+> on Drupal 11, so a current site is likely affected out of the box. Drupal 10.2
+> predates Navigation and is unaffected.
 
-Navigation replaces the classic Toolbar rather than complementing it. Core's
+Navigation replaces the classic Toolbar rather than complementing it: core's
 `toolbar_page_top()` returns early whenever Navigation is installed and the
 current user has the `access navigation` permission, so the toolbar is never
-built and the `hook_toolbar_alter()` this module relies on never fires. The two
-cannot be combined; per user, exactly one of them renders.
+built and the `hook_toolbar_alter()` this module relies on never fires. Per
+user, exactly one of the two renders.
 
-To use this module, either uninstall Navigation, or revoke `access navigation`
-from the roles that should get the overridden toolbar.
+Either uninstall Navigation, or revoke `access navigation` from the roles that
+should get the overridden toolbar. Note that the standard profile grants that
+permission to the Content editor role.
 
-Navigation ships enabled with the standard profile on recent core, and core
-plans to move Toolbar to a contributed project before Drupal 12. See
-[#3484850](https://www.drupal.org/project/drupal/issues/3484850).
+Core plans to move Toolbar to a contributed project before Drupal 12
+([#3484850](https://www.drupal.org/project/drupal/issues/3484850)).
 
 ## INSTALLATION
 
@@ -29,7 +35,7 @@ Install as usual at /admin/extend.
 ## USAGE
 
 1. Navigate to /admin/config/user-interface/custom-admin-toolbar to view the settings form.
-(Make sure the "administer site configuration" is permission is granted to the user
+(Make sure the "administer site configuration" permission is granted to the user
 accessing the module settings form.)
 
 2. Select the specific roles that should view the overridden admin toolbar. To automatically
@@ -40,4 +46,5 @@ apply to all roles (except "super administrative" roles) do not select any roles
 
 4. Hide extra miscellaneous menu tabs if desired.
 
-5. Save the settings form, and clear the website cache.
+5. Save the settings form. Changes to the settings or to the source menu take
+effect on the next page load; no cache rebuild is needed.
