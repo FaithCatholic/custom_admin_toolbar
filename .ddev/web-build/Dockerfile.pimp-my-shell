@@ -1,63 +1,57 @@
 #ddev-generated
 
-# ahoy
-RUN wget -q https://github.com/ahoy-cli/ahoy/releases/download/v2.1.1/ahoy-bin-linux-`dpkg --print-architecture` -O - > /usr/local/bin/ahoy && chmod +x /usr/local/bin/ahoy
-
-# fzf et al
-RUN mkdir -p /opt/fzf && cd /opt/fzf && git init && git remote add origin https://github.com/junegunn/fzf.git && git fetch --depth 1 origin c4a9ccd6afc3698a57a6b938ebba6d85238033e2 && git checkout FETCH_HEAD && /opt/fzf/install --all && cp /root/.fzf.bash /opt
-RUN mkdir -p /opt/fzf-git.sh && cd /opt/fzf-git.sh && git init && git remote add origin https://github.com/junegunn/fzf-git.sh.git && git fetch --depth 1 origin bd8ac4ba4c9d7d12b34f7fa2b0d334f50cdb5254 && git checkout FETCH_HEAD
-
-# bat
-RUN wget -q https://github.com/sharkdp/bat/releases/download/v0.24.0/bat_0.24.0_`dpkg --print-architecture`.deb -O bat.deb &&  dpkg -i bat.deb && rm bat.deb
-
-# z.lua
-RUN mkdir -p /opt/z.lua && wget https://github.com/skywind3000/z.lua/archive/refs/tags/1.8.18.zip -qO- | bsdtar xf - --strip-components=1 -C /opt/z.lua
-
-# starship
-RUN curl -sS https://starship.rs/install.sh | sh -s -- -y -v v1.19.0
-
-# gum
-RUN wget -q https://github.com/charmbracelet/gum/releases/download/v0.14.1/gum_0.14.1_`dpkg --print-architecture`.deb -O gum.deb && dpkg -i gum.deb && rm gum.deb
-
-# fish
-RUN echo "deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_`lsb_release -rs`/ /" | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
-RUN curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_`lsb_release -rs`/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
-RUN apt update && apt satisfy -y "fish (>=3.7.1)"
+##
+# vim as default editor
+#
+RUN set -eux; \
+    update-alternatives --set editor /usr/bin/vim.nox
 
 ##
-# Tools to install under ddev non-root user
+# While any Docker cache on these lines should have negligent impact as most run
+# in less than a second, I am leaving the ones that take slightly longer than
+# the others on top.
 #
-USER $uid:$gid
+COPY --from=pimp-my-shell-go /usr/local/go /usr/local/go
+COPY --from=pimp-my-shell-ahoy /usr/local/bin/ahoy /usr/local/bin
+COPY --from=pimp-my-shell-starship /usr/local/bin/starship /usr/local/bin
+COPY --from=pimp-my-shell-gum /opt/gum /usr/local/bin
+COPY --from=pimp-my-shell-gum /opt/completions/gum.bash /usr/share/bash-completion/completions/gum
+COPY --from=pimp-my-shell-gum /opt/completions/gum.fish /usr/share/fish/vendor_completions.d/gum.fish
+COPY --from=pimp-my-shell-fzf /usr/local/bin/fzf /usr/local/bin
+COPY --from=pimp-my-shell-fzfgit /opt/fzf-git.sh /opt/fzf-git.fish /opt/fzf-git.sh/
+COPY --from=pimp-my-shell-eza /usr/local/bin/eza /usr/local/bin
+COPY --from=pimp-my-shell-eza /opt/eza /usr/share/bash-completion/completions/eza
+COPY --from=pimp-my-shell-eza /opt/eza.fish /usr/share/fish/vendor_completions.d/eza.fish
+COPY --from=pimp-my-shell-fish /usr/bin/fish /usr/bin/fish_indent /usr/bin/fish_key_reader /usr/bin
+COPY --from=pimp-my-shell-fish /etc/fish /etc/fish
+COPY --from=pimp-my-shell-fish /usr/share/fish /usr/share/fish
+COPY --chown=$uid:$gid --from=pimp-my-shell-fisher-plugins /root/.config/fish /home/$username/.config/fish
+COPY --from=pimp-my-shell-zlua /opt/z.lua/z.lua /opt/z.lua
+COPY --from=pimp-my-shell-xterm-kitty /opt/kitty/terminfo/x/xterm-kitty /usr/share/terminfo/x/
+COPY --from=pimp-my-shell-go-sysbox /root/go/bin/sysbox /usr/local/bin
+COPY --from=pimp-my-shell-go-recur /root/go/bin/recur /usr/local/bin
+COPY --from=pimp-my-shell-tte /usr/local/bin/tte /usr/local/bin
+COPY --from=pimp-my-shell-tte /opt/terminaltexteffects /opt/terminaltexteffects
+COPY --from=pimp-my-shell-fd /opt/fd /usr/local/bin
+COPY --from=pimp-my-shell-fd /opt/autocomplete/fd.bash /usr/share/bash-completion/completions/fd
+COPY --from=pimp-my-shell-fd /opt/autocomplete/fd.fish /usr/share/fish/vendor_completions.d/fd.fish
+COPY --from=pimp-my-shell-bat /opt/bat /usr/local/bin
+COPY --from=pimp-my-shell-bat /opt/autocomplete/bat.bash /usr/share/bash-completion/completions/bat
+COPY --from=pimp-my-shell-bat /opt/autocomplete/bat.fish /usr/share/fish/vendor_completions.d/bat.fish
+COPY --chown=$uid:$gid --from=pimp-my-shell-rust /root/.cargo /home/$username/.cargo
+COPY --chown=$uid:$gid --from=pimp-my-shell-rust /root/.rustup /home/$username/.rustup
+COPY --from=pimp-my-shell-lazygit /usr/local/bin/lazygit /usr/local/bin
+COPY --from=pimp-my-shell-ov /usr/local/bin/ov /usr/local/bin
+COPY --chown=$uid:$gid --from=pimp-my-shell-bun /root/.bun /home/$username/.bun
+COPY --from=pimp-my-shell-gh /opt/bin/gh /usr/local/bin
+COPY --from=pimp-my-shell-delta /opt/delta /usr/local/bin
+COPY --from=pimp-my-shell-spacer /usr/local/bin/spacer /usr/local/bin
+COPY --from=pimp-my-shell-multitail /opt/multitail/build/multitail /usr/local/bin
+COPY --from=pimp-my-shell-tmux /opt/tmux/tmux /usr/local/bin
+COPY --from=pimp-my-shell-doctl /usr/local/bin/doctl /usr/local/bin
+COPY --from=pimp-my-shell-task /opt/task /
+COPY --from=pimp-my-shell-upterm /opt/upterm/usr/bin /usr/bin
+COPY --from=pimp-my-shell-upterm /opt/upterm/usr/share/bash-completion /usr/share/bash-completion
+COPY --from=pimp-my-shell-upterm /opt/upterm/usr/share/zsh/site-functions /usr/share/zsh/site-functions
 
-# Fish plugins
-RUN fish -c "curl -sL 'https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish' | source && fisher install jorgebucaran/fisher@4.4.4"
-RUN \
-    fish -c "fisher install IlanCosman/tide@v6.1.1" ; \
-    fish -c "fisher install edc/bass@v1.0"
-
-# bun.sh
-RUN curl -fsSL https://bun.sh/install | bash -s "bun-v1.1.14"
-
-# Go back to root
-USER root:root
-
-# kitty-terminfo from unstable, using its snapshot to make sure there's always gonna ver a version
-# this can be updated manually by looking at
-# https://snapshot.debian.org/binary/kitty-terminfo/
-RUN set -eux; \
-    pkg_url="https://snapshot.debian.org/archive/debian/20240501T150311Z/pool/main/k/kitty/kitty-terminfo_0.34.1-1_all.deb"; \
-    mkdir -p /tmp/kitty-terminfo ; \
-    cd /tmp/kitty-terminfo ; \
-    wget -q "$pkg_url" -O kitty-terminfo.deb ; \
-    ar x kitty-terminfo.deb; \
-    tar -xf data.tar.xz; \
-    cp -R usr/share/terminfo/* /usr/share/terminfo; \
-    cd; \
-    rm -fr /tmp/kitty-terminfo;
-
-# vim
-RUN update-alternatives --set editor /usr/bin/vim.nox
-
-# tte
-# https://chrisbuilds.github.io/terminaltexteffects/
-RUN PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install terminaltexteffects
+RUN upterm completion fish > /usr/share/fish/vendor_completions.d/upterm.fish

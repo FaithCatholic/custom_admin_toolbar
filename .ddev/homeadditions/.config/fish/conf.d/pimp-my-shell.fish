@@ -1,17 +1,16 @@
 #ddev-generated
 
-# PATH
-fish_add_path /usr/games
+# Most things will be inheritted from pimp-my-shell.sh run by .bashrc.d because
+# fish is run by bash as that what it does with custom commands like `ddev fish`
+# Only add fish additions here
 
 # fzf
-fish_add_path /opt/fzf/bin
-function fish_user_key_bindings
-  fzf --fish | source
-end
+fzf --fish | source
+
+# fzf-git
+source /opt/fzf-git.sh/fzf-git.fish
 
 # z.lua
-mkdir -p /mnt/ddev-global-cache/z.lua/$HOSTNAME
-set -x _ZL_DATA /mnt/ddev-global-cache/z.lua/$HOSTNAME/.zlua
 lua /opt/z.lua/z.lua --init fish | source
 
 # fish
@@ -28,7 +27,12 @@ if test -f /mnt/ddev-global-cache/fishhistory/$HOSTNAME/fish_history
 end
 
 function fish_title
-  set --local title "$DDEV_PROJECT/ddev: "(fish_prompt_pwd_dir_length=1 prompt_pwd)
+  set --local title (
+    printf "%s%s/ddev: %s" \
+      "$PIMP_MY_SHELL_TITLE_PREFIX" \
+      "$DDEV_PROJECT" \
+      (fish_prompt_pwd_dir_length=1 prompt_pwd)
+  )
   if count $argv > /dev/null
     set title "$argv - $title"
   end
@@ -39,4 +43,19 @@ end
 set -x IS_FISH_SHELL 1
 if status --is-interactive
   set -x IS_FISH_INTERACTIVE_SHELL 1
+  set -e DDEV_PIMP_MY_SHELL_NON_INTERACTIVE
+  set -x DDEV_PIMP_MY_SHELL_INTERACTIVE true
 end
+
+# eza aliases
+# https://gist.github.com/AppleBoiy/04a249b6f64fd0fe1744aff759a0563b
+function ls --wraps eza --description "alias ls='eza --color=always --group-directories-first --icons'"
+    eza --color=always --group-directories-first --icons $argv
+end
+
+function ll --wraps eza --description "eza -la --icons --octal-permissions --group-directories-first"
+    eza -la --icons --octal-permissions --group-directories-first $argv
+end
+
+# Make child processes treat fish as the current/default shell for this session
+set -gx SHELL (command -v fish)

@@ -8,18 +8,23 @@ webimage_extra_packages:
   - boxes
   - bsdmainutils
   - build-essential
+  - certbot
   - colorized-logs
   - cowsay
   - dialog
+  - dnsutils
   - figlet
   - htop
+  - inotify-tools
   - libarchive-tools
   - lolcat
   - lua5.4
+  - man-db
+  - moreutils
   - net-tools
-  - pipx
   - pv
   - screen
+  - time
   - vim-nox
 web_environment:
   - COLORTERM=${COLORTERM}
