@@ -2,6 +2,7 @@
 
 namespace Drupal\custom_admin_toolbar\Render\Element;
 
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\admin_toolbar\Render\Element\AdminToolbar;
@@ -34,12 +35,23 @@ class CustomAdminToolbar extends AdminToolbar implements TrustedCallbackInterfac
     ];
     $tree = $menu_tree->transform($tree, $manipulators);
     $build = $menu_tree->build($tree);
+
+    // Merging only '#items' would drop the tree's cache metadata, leaving the
+    // rendered toolbar stale after menu or settings changes.
+    $cacheability = CacheableMetadata::createFromRenderArray($build)
+      ->addCacheableDependency($config);
+
     if (!empty($element['administration_menu']['#items']) && !empty($build['#items'])) {
       $element['administration_menu']['#items'] += $build['#items'];
     }
     else {
       $element['administration_menu'] = $build;
     }
+
+    $cacheability
+      ->merge(CacheableMetadata::createFromRenderArray($element['administration_menu']))
+      ->applyTo($element['administration_menu']);
+
     return $element;
   }
 

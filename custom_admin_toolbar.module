@@ -5,6 +5,7 @@
  * Custom admin toolbar module hooks.
  */
 
+use Drupal\Core\Cache\Cache;
 use Drupal\custom_admin_toolbar\Render\Element\CustomAdminToolbar;
 use Drupal\user\Entity\Role;
 
@@ -29,6 +30,12 @@ function custom_admin_toolbar_module_implements_alter(&$implementations, $hook) 
  */
 function custom_admin_toolbar_toolbar_alter(&$items) {
   $config = \Drupal::service('config.factory')->get('custom_admin_toolbar.settings');
+
+  // The toolbar varies by these settings and by the roles they are matched
+  // against. Record that unconditionally, so the cached toolbar is also
+  // invalidated when a change starts or stops the override applying.
+  $items['#cache']['tags'] = Cache::mergeTags($items['#cache']['tags'] ?? [], $config->getCacheTags());
+  $items['#cache']['contexts'] = Cache::mergeContexts($items['#cache']['contexts'] ?? [], ['user.roles']);
 
   // Determine if the user is user 1, or has a
   // super administrator role since they always
