@@ -16,7 +16,8 @@ if [ -z "$(drush status --field=bootstrap)" ]; then
   drush cim -y --partial --source=/var/www/html/.ddev/custom_admin_toolbar/config/
   drush scr ./.ddev/custom_admin_toolbar/create-menu-items.php
   cat .ddev/custom_admin_toolbar/custom_admin_toolbar.settings.yml | drush cset --input-format=yaml custom_admin_toolbar.settings \? -
-  drush rap 'authenticated' 'access devel information'
+  drush rap authenticated 'access devel information'
+  drush rap content_editor 'access toolbar'
 fi
 
 # Always output this
