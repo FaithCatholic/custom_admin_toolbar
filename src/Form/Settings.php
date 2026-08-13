@@ -89,13 +89,15 @@ class Settings extends ConfigFormBase {
 
     $form['tabs']['hide_user'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Hide account tab'),
+      '#title' => $this->t('Hide the account tab'),
+      '#description' => $this->t('Removes the tab showing the current user name, which opens a tray with links to their account page and log out.'),
       '#default_value' => $config->get('hide_user') ? $config->get('hide_user') : 0,
     ];
 
     $form['tabs']['hide_home'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Hide home tab'),
+      '#title' => $this->t('Hide the "Back to site" tab'),
+      '#description' => $this->t('Removes the tab linking from the administration pages back to the front page. It is only visible while viewing an administration page, so hiding it has no effect elsewhere.'),
       '#default_value' => $config->get('hide_home') ? $config->get('hide_home') : 0,
     ];
 
