@@ -11,8 +11,8 @@
     "source": "http://cgit.drupalcode.org/custom_admin_toolbar"
   },
   "require-dev": {
-    "drupal/devel": "^5.2",
-    "drupal/admin_toolbar": "^3.4",
-    "drush/drush": "^12"
+    "drupal/devel": "*",
+    "drupal/admin_toolbar": "*",
+    "drush/drush": "*"
   }
 }

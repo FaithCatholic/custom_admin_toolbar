@@ -1,4 +1,6 @@
 .DS_Store
 Thumbs.db
-web/
-vendor/
+/web/
+/vendor/
+/recipes
+/phpcs.xml.dist
