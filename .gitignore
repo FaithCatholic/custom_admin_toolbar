@@ -4,3 +4,4 @@ Thumbs.db
 /vendor/
 /recipes
 /phpcs.xml.dist
+/phpstan*
